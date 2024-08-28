@@ -1,23 +1,23 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
 func main() {
-	str, err := normalizeURL("https://blog.boot.dev/path/")
-	if err != nil {
-		fmt.Println(err)
+	args := os.Args
+
+	if len(args) < 2 {
+		fmt.Println("no website provided")
+		os.Exit(1)
 	}
-	fmt.Println(str)
 
-	body := `
-	<html>
-    	<body>
-        	<a href="https://blog.boot.dev"><span>Go to Boot.dev</span></a>
-    	</body>
-	</html>
-	`
-	url := "https://blog.boot.dev"
+	if len(args) > 2 {
+		fmt.Println("too many arguments provided")
+		os.Exit(1)
+	}
 
-	urlList, err := getURLsFromHTML(body, url)
-	fmt.Println(urlList)
+	fmt.Println("starting crawl of:", args[1])
+	fmt.Println(getHTML(args[1]))
 }
