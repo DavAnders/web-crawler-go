@@ -11,9 +11,16 @@ func normalizeURL(rawURL string) (string, error) {
 		return "", err
 	}
 
+	// Trim the trailing slash from the path
 	path := strings.TrimSuffix(parsedURL.Path, "/")
 
-	normalizedURL := parsedURL.Hostname() + path
+	// Reconstruct with scheme, hostname, path
+	normalizedURL := parsedURL.Scheme + "://" + parsedURL.Hostname() + path
+
+	// Add the query if it exists
+	if parsedURL.RawQuery != "" {
+		normalizedURL += "?" + parsedURL.RawQuery
+	}
 
 	return normalizedURL, nil
 }
