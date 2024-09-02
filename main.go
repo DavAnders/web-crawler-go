@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/url"
 	"os"
 )
 
@@ -12,14 +13,24 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Println("Starting crawl of:", baseURL)
-	pages, err := crawlPage(baseURL, baseURL, map[string]int{})
+	// Parse to make sure the URL is valid
+	parsedBaseURL, err := url.Parse(baseURL)
 	if err != nil {
-		fmt.Println("Error during crawling:", err)
+		fmt.Println("Error parsing base URL:", err)
 		os.Exit(1)
 	}
 
-	printCrawlSummary(pages)
+	// Create a new config with a concurrency limit of 5
+	cfg := newConfig(parsedBaseURL, 5)
+
+	// Start the crawl with the base URL
+	cfg.wg.Add(1)
+	go cfg.crawlPage(baseURL)
+
+	// Wait for all the crawlers to finish
+	cfg.wg.Wait()
+
+	printCrawlSummary(cfg.pages)
 }
 
 // parseArguments validates the arguments provided to the program
