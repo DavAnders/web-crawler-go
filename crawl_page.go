@@ -7,6 +7,12 @@ import (
 )
 
 func (cfg *config) crawlPage(rawCurrentURL string) error {
+	// If the maximum number of pages has been reached, return nil to stop the recursion
+	if len(cfg.pages) >= cfg.maxPages {
+		cfg.wg.Done()
+		return nil
+	}
+
 	defer cfg.wg.Done() // Decrement the WaitGroup counter when the function completes in order to signal to the main goroutine that it has finished
 
 	currentURL, err := url.Parse(rawCurrentURL)
