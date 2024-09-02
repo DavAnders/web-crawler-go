@@ -32,7 +32,8 @@ func main() {
 	// Wait for all the crawlers to finish
 	cfg.wg.Wait()
 
-	printCrawlSummary(cfg.pages)
+	//printCrawlSummary(cfg.pages)
+	printReport(cfg.pages, baseURL)
 }
 
 // parseArguments validates the arguments provided to the program
@@ -60,7 +61,6 @@ func parseArguments(args []string) (string, int, int, error) {
 		return "", 0, 0, fmt.Errorf("no website provided")
 	}
 
-	// Extract base URL and optionally override maxConcurrency and maxPages
 	baseURL := remainingArgs[0]
 
 	if len(remainingArgs) > 1 {
